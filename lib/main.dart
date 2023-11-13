@@ -5,29 +5,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Alaska Landscape",
-                style: TextStyle(
-                  fontSize: 24.0, 
-                  fontWeight: FontWeight.bold, 
-                  fontFamily: 'Arial', 
-                  color: Colors.blue, 
-                ),
-              ),
-              SizedBox(height: 20.0), // Füge mehr Abstand hinzu
-              MyImageLoader(),
-            ],
-          ),
+          child: MyImageLoader(),
         ),
       ),
     );
@@ -35,31 +20,41 @@ class MyApp extends StatelessWidget {
 }
 
 class MyImageLoader extends StatelessWidget {
-  const MyImageLoader({super.key});
+  const MyImageLoader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image.network(
-          'https://www.wikinger-reisen.de/bilder/reiseseiten/denali-nationalpark-head4125-t.webp',
-          width: 300, // Setze die Breite nach Bedarf
-          height: 200, // Setze die Höhe nach Bedarf
-          fit: BoxFit.cover,
-          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },
-        ),
-      ],
+    return FutureBuilder<void>(
+      future: loadImage(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // Wenn der Ladevorgang abgeschlossen ist, zeige das Bild an
+          return Image.network(
+            'https://www.wikinger-reisen.de/bilder/reiseseiten/nonexistent_image.webp', // Hier verwenden wir eine falsche URL, um einen Fehler zu provozieren
+            width: 300,
+            height: 200,
+            fit: BoxFit.cover,
+          );
+        } else if (snapshot.hasError) {
+          // Wenn ein Fehler auftritt, zeige den Error-Zustand an
+          return Center(
+            child: Text(
+              'Fehler beim Laden des Bildes: ${snapshot.error}',
+              style: TextStyle(color: Colors.red),
+            ),
+          );
+        } else {
+          // Wenn das Bild noch lädt, zeige den Fortschrittsindikator an
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
+  }
+
+  Future<void> loadImage() async {
+    // Hier provozieren wir einen Fehler, indem wir versuchen, ein nicht vorhandenes Bild zu laden
+    throw 'Simulierter Fehler: Bild konnte nicht geladen werden';
   }
 }
