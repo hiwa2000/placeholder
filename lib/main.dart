@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: MyImageLoader(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Alaska Landscape",
+                style: TextStyle(
+                  fontSize: 24.0, 
+                  fontWeight: FontWeight.bold, 
+                  fontFamily: 'Arial', 
+                ),
+              ),
+              const SizedBox(height: 20.0), 
+              MyImageLoader(),
+            ],
+          ),
         ),
       ),
     );
@@ -21,7 +34,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyImageLoader extends StatelessWidget {
-  const MyImageLoader({super.key});
+  const MyImageLoader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +59,18 @@ class MyImageLoader extends StatelessWidget {
               );
             } else {
               return Center(
-                child: Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    width: 300,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                child: Container(
+                  width: 300,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Image.network(
+                    'https://www.fvw.de/news/media/22/Anchorage-Northern-Lights-Viewing--219909.jpeg',
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
                   ),
                 ),
               );
